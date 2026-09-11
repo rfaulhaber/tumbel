@@ -1,0 +1,7 @@
+{
+  "meta": {"status": 400, "msg": "Bad Request"},
+  "response": [],
+  "errors": [
+    {"title": "Bad Request", "code": 8001, "detail": "Post content is invalid."}
+  ]
+}

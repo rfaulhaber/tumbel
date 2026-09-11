@@ -1,0 +1,23 @@
+{
+  "meta": {"status": 200, "msg": "OK"},
+  "response": {
+    "notes": [
+      {"type": "reply", "timestamp": 1757548700, "blog_name": "replier", "blog_uuid": "t:Replier", "blog_url": "https://replier.tumblr.com/", "followed": false, "avatar_shape": "circle", "reply_text": "Great post!", "formatting": []},
+      {"type": "reblog", "timestamp": 1757548600, "blog_name": "rebloggy", "blog_uuid": "t:Rebloggy", "blog_url": "https://rebloggy.tumblr.com/", "followed": true, "post_id": "555", "reblog_parent_blog_name": "example", "added_text": "Adding my thoughts.", "tags": ["thoughts"]},
+      {"type": "reblog", "timestamp": 1757548500, "blog_name": "quiet", "blog_uuid": "t:Quiet", "blog_url": "https://quiet.tumblr.com/", "followed": false, "post_id": "556", "reblog_parent_blog_name": "example"},
+      {"type": "like", "timestamp": 1757548400, "blog_name": "liker", "blog_uuid": "t:Liker", "blog_url": "https://liker.tumblr.com/", "followed": false},
+      {"type": "posted", "timestamp": 1757548300, "blog_name": "example", "blog_uuid": "t:AbCdEfGhIjKlMnOpQrStUv", "blog_url": "https://example.tumblr.com/", "followed": false}
+    ],
+    "rollup_notes": [],
+    "total_notes": 1234,
+    "total_likes": 1000,
+    "total_reblogs": 200,
+    "_links": {
+      "next": {
+        "href": "/v2/blog/example/notes?id=1003&mode=conversation&before_timestamp=1757548300",
+        "method": "GET",
+        "query_params": {"id": "1003", "mode": "conversation", "before_timestamp": "1757548300"}
+      }
+    }
+  }
+}

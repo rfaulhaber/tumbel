@@ -1,0 +1,37 @@
+{
+  "meta": {"status": 200, "msg": "OK"},
+  "response": {
+    "blog": {"name": "example", "title": "Example Blog", "url": "https://example.tumblr.com/", "uuid": "t:AbCdEfGhIjKlMnOpQrStUv", "updated": 1757548800, "posts": 7, "total_posts": 7},
+    "posts": [
+      {
+        "type": "blocks", "original_type": "regular", "is_blocks_post_format": true,
+        "blog_name": "example",
+        "blog": {"name": "example", "title": "Example Blog", "url": "https://example.tumblr.com/", "uuid": "t:AbCdEfGhIjKlMnOpQrStUv", "updated": 1757548800},
+        "id": 1005, "id_string": "1005",
+        "post_url": "https://example.tumblr.com/post/1005",
+        "slug": "media-post", "date": "2025-09-07 12:00:00 GMT", "timestamp": 1757246400,
+        "state": "published", "reblog_key": "rk1005",
+        "tags": [], "summary": "Example Article",
+        "followed": false, "liked": false, "note_count": 0,
+        "can_like": true, "can_reblog": false, "can_reply": true,
+        "content": [{"type": "text", "text": "Duplicate of a post already shown."}],
+        "layout": [], "trail": []
+      },
+      {
+        "type": "blocks", "original_type": "regular", "is_blocks_post_format": true,
+        "blog_name": "example",
+        "blog": {"name": "example", "title": "Example Blog", "url": "https://example.tumblr.com/", "uuid": "t:AbCdEfGhIjKlMnOpQrStUv", "updated": 1757548800},
+        "id": 1007, "id_string": "1007",
+        "post_url": "https://example.tumblr.com/post/1007",
+        "slug": "page-two", "date": "2025-09-05 12:00:00 GMT", "timestamp": 1757073600,
+        "state": "published", "reblog_key": "rk1007",
+        "tags": [], "summary": "Page two post.",
+        "followed": false, "liked": false, "note_count": 2,
+        "can_like": true, "can_reblog": true, "can_reply": true,
+        "content": [{"type": "text", "text": "Page two post."}],
+        "layout": [], "trail": []
+      }
+    ],
+    "total_posts": 7
+  }
+}

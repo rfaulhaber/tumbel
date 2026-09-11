@@ -1,0 +1,20 @@
+{
+  "meta": {"status": 200, "msg": "OK"},
+  "response": {
+    "notifications": [
+      {"id": "n1", "type": "like", "timestamp": 1757548700, "unread": true, "from_tumblelog_name": "liker", "target_post_id": "1001"},
+      {"id": "n2", "type": "reply", "timestamp": 1757548600, "unread": true, "from_tumblelog_name": "replier", "target_post_id": "1001", "reply_text": "So true"},
+      {"id": "n3", "type": "reblog_with_content", "timestamp": 1757548500, "unread": false, "from_tumblelog_name": "rebloggy", "target_post_id": "1003", "post_id": "555", "added_text": "Adding my thoughts.", "post_tags": ["thoughts"]},
+      {"id": "n4", "type": "follow", "timestamp": 1757548400, "unread": false, "from_tumblelog_name": "newfan"},
+      {"id": "n5", "type": "ask", "timestamp": 1757548300, "unread": false, "from_tumblelog_name": "asker", "post_id": "777"},
+      {"id": "n6", "type": "something_new", "timestamp": 1757548200, "unread": false, "from_tumblelog_name": "future"}
+    ],
+    "_links": {
+      "next": {
+        "href": "/v2/blog/example/notifications?before=1757548200",
+        "method": "GET",
+        "query_params": {"before": "1757548200"}
+      }
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "meta": {"status": 200, "msg": "OK"},
+  "response": {
+    "notes": [
+      {"type": "like", "timestamp": 1757548200, "blog_name": "early-liker", "blog_uuid": "t:Early", "blog_url": "https://early-liker.tumblr.com/", "followed": false}
+    ],
+    "total_notes": 1234
+  }
+}

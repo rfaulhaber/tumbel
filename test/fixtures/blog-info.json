@@ -1,0 +1,31 @@
+{
+  "meta": {"status": 200, "msg": "OK"},
+  "response": {
+    "blog": {
+      "ask": true,
+      "ask_anon": true,
+      "ask_page_title": "Ask me anything",
+      "asks_allow_media": true,
+      "avatar": [
+        {"width": 512, "height": 512, "url": "https://64.media.tumblr.com/avatar_0000000000ab_512.png"},
+        {"width": 128, "height": 128, "url": "https://64.media.tumblr.com/avatar_0000000000ab_128.png"},
+        {"width": 96, "height": 96, "url": "https://64.media.tumblr.com/avatar_0000000000ab_96.png"},
+        {"width": 64, "height": 64, "url": "https://64.media.tumblr.com/avatar_0000000000ab_64.png"}
+      ],
+      "can_chat": false,
+      "can_subscribe": false,
+      "description": "The official <b>example</b> blog.",
+      "followed": false,
+      "is_nsfw": false,
+      "name": "example",
+      "posts": 1234,
+      "share_likes": false,
+      "subscribed": false,
+      "title": "Example Blog",
+      "total_posts": 1234,
+      "updated": 1757548800,
+      "url": "https://example.tumblr.com/",
+      "uuid": "t:AbCdEfGhIjKlMnOpQrStUv"
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "meta": {"status": 200, "msg": "OK"},
+  "response": {
+    "total_users": 2,
+    "users": [
+      {"name": "liker", "following": true, "url": "https://liker.tumblr.com/", "updated": 1757548000},
+      {"name": "newfan", "following": false, "url": "https://newfan.tumblr.com/", "updated": 1757547000}
+    ]
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "meta": {"status": 200, "msg": "OK"},
+  "response": {
+    "total_blogs": 3,
+    "blogs": [
+      {"name": "root-blog", "url": "https://root-blog.tumblr.com/", "updated": 1757548000, "title": "Root", "description": "The root."},
+      {"name": "middle-blog", "url": "https://middle-blog.tumblr.com/", "updated": 1757540000, "title": "Middle", "description": ""}
+    ]
+  }
+}

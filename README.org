@@ -1,0 +1,143 @@
+#+TITLE: tumblr.el
+#+AUTHOR: Ryan Faulhaber
+
+An interactive Tumblr client for Emacs, in the spirit of =twittering-mode= and
+=md4rd=: browse your dashboard and blogs, and post, reblog and like without
+leaving Emacs.
+
+*Status:* early development. You can log in, read your dashboard with inline
+images, browse blogs and tags, like, reblog, follow and delete, and write,
+reblog with a comment, edit text posts, read the notes of a post and follow
+the activity of your blog. Posts are written in Org, with images uploaded
+from file links, you can manage your queue, drafts and inbox, and posts
+matching the tags and words you filter on Tumblr are collapsed until shown.
+
+* Setup
+
+tumblr.el talks to the Tumblr API with the consumer key and secret of an
+application you register at https://www.tumblr.com/oauth/apps. Store them in
+=auth-source=, for example in =~/.authinfo.gpg=:
+
+#+begin_example
+machine api.tumblr.com login CONSUMER-KEY password CONSUMER-SECRET
+#+end_example
+
+or set =tumblr-consumer-key= and =tumblr-consumer-secret= directly. Public
+blogs can be read with the key alone; the dashboard and every action need a
+login.
+
+Logging in (=M-x tumblr-login=, or just =M-x tumblr=) opens the authorization
+page in your browser. Register =http://localhost:3000/redirect= as the default
+callback URL of your application, or set =tumblr-oauth-redirect-uri= to the
+URL you registered: when it points at a port on this machine, Emacs listens
+there and the login completes on its own. Otherwise, or with
+=tumblr-oauth-use-listener= nil, paste the code or the URL the browser was
+sent to. Tokens are kept in =~/.emacs.d/tumblr/tokens.eld= (mode 600; point
+=tumblr-token-file= at a =.gpg= name to encrypt them) and refreshed
+automatically; =M-x tumblr-logout= forgets them.
+
+The package depends on =plz=, which drives =curl=, so =curl= must be on your
+=PATH=.
+
+* Usage
+
+- =M-x tumblr= :: your dashboard, logging in first when needed.
+- =M-x tumblr-blog= :: browse the posts of a blog (name, hostname or URL); with
+  a prefix argument, only its posts carrying a tag.
+- =M-x tumblr-compose= :: write a new post.
+- =M-x tumblr-likes= :: the posts you liked.
+- =M-x tumblr-queue=, =M-x tumblr-drafts= and =M-x tumblr-inbox= :: the posts of
+  your blog that are not public yet (a prefix argument chooses the blog). =P=
+  publishes the post at point now, =A= answers an ask, =M-<up>= and
+  =M-<down>= move a queued post and =S= shuffles the queue.
+- =M-x tumblr-following= and =M-x tumblr-followers= :: tables of the blogs you
+  follow and of the followers of your blog; =RET= opens one, =u= unfollows,
+  =L= loads more.
+- =M-x tumblr-notifications= :: the activity of your default blog (with a
+  prefix argument, choose the blog).
+- =M-x tumblr-tag= :: browse the posts carrying a tag.
+
+In a feed buffer: =n= and =p= move between posts (=n= past the last post
+loads more), =TAB= moves between buttons (blog names, tags, links, "Keep
+reading"), =RET= follows the button at point or opens the post on its own,
+=b= opens the blog of the post, =t= browses one of its tags, =o= opens it in
+the browser, =y= copies its URL, =l= likes or unlikes it, =R= reblogs it to
+your default blog (=tumblr-default-blog=, or the primary blog), =f= follows or
+unfollows its blog, =D= deletes it when it is yours, =i= toggles inline images,
+=r= reblogs it with a comment, =E= edits it when it is yours, =c= starts a
+new post, =v= shows the notes of the post (=M-x tumblr-notes-switch-mode=
+selects likes, reblogs or everything), =?= shows a menu of every command,
+=L= loads the next page, =g=
+reloads and
+=q= quits.
+
+The compose buffer is an Org buffer. It starts with =#+blog:=, =#+tags:= (comma
+separated) and
+=#+state:= (published, draft, queue or private) lines; everything after them
+is the post: headlines become headings, paragraphs text (with =*bold*=,
+=/italic/=, =+struck+=, links and =[[tumblr:NAME]]= mentions), lists become
+list items, =#+begin_quote= indented text, =#+begin_verse= and source blocks
+chat lines, a paragraph holding only =[[file:IMAGE]]= uploads that image
+(=C-c C-a= inserts one) and a paragraph holding only a URL becomes a link
+card. =C-c C-c= sends, =C-c C-k=
+discards, =C-c C-t=, =C-c C-b= and =C-c C-s= change the tags, blog and state,
+and =C-c C-p= shows the JSON that would be sent. Editing one of your posts
+(=E= on it) fetches it again; blocks that are not text appear as
+=#+tumblr-block: N= lines and are kept as they were.
+
+* Development
+
+The repository is a Nix flake. Enter the devshell with =nix develop= (or let
+=direnv= pick up the =.envrc=). It provides a headless Emacs whose load-path
+already contains =plz= and the development libraries, plus =just=, =curl=,
+=nixfmt=, =deadnix= and =statix=.
+
+Day-to-day tasks are =just= recipes (=just --list= shows them), all of which
+run =emacs -Q --batch=:
+
+| Recipe         | What it does                                                        |
+|----------------+---------------------------------------------------------------------|
+| =just compile= | Byte-compiles every top-level =.el=, treating warnings as errors    |
+| =just test=    | Runs the ERT suites in =test/=                                      |
+| =just lint=    | Runs =elisp-lint=: checkdoc, package-lint, indentation, whitespace  |
+| =just clean=   | Removes byte-compiled and scratch files                             |
+
+The same recipes back the flake checks, so =nix flake check= runs the build,
+tests and lint against a clean store copy of the sources. Format Nix files with
+=nix fmt=.
+
+Tests never touch the network: =test/tumblr-test-support.el= provides a fake
+HTTP backend that serves the JSON fixtures in =test/fixtures/=.
+
+* Layout
+
+- =tumblr.el= :: the entry point. It declares the customization group and the
+  package dependencies and requires the other files.
+- =tumblr-http.el= :: the HTTP transport on top of =plz=, JSON handling and
+  the error types.
+- =tumblr-auth.el= :: consumer credentials, the OAuth 2.0 login and tokens.
+- =tumblr-user.el= :: the account of the logged-in user.
+- =tumblr-api.el= :: request building, authentication levels and endpoint
+  wrappers for the Tumblr API v2.
+- =tumblr-media.el= :: inline images, fetched in the background and cached
+  under =~/.emacs.d/tumblr/media/= (=M-x tumblr-media-clear-cache= empties it).
+  Set =tumblr-display-images= to nil to keep placeholders instead.
+- =tumblr-npf.el= :: rendering of Neue Post Format posts.
+- =tumblr-feed.el= :: the feed buffer mode shared by every view.
+- =tumblr-blog.el= :: blog, tag and likes views.
+- =tumblr-lists.el= :: tables of blogs (following, followers).
+- =tumblr-manage.el= :: queue, drafts and inbox.
+- =tumblr-org.el= :: the Org subset posts are written in, and its inverse.
+- =tumblr-compose.el= :: writing, reblogging and editing posts.
+- =tumblr-notes.el= :: the notes of a post.
+- =tumblr-notifications.el= :: the activity of your blogs.
+- =test/= :: ERT tests, one =NAME-test.el= per source file, plus shared
+  helpers and fixtures.
+- =flake.nix= :: devshell, package build and checks. Runtime dependencies are
+  declared once in =runtimeDeps= and must match the =Package-Requires= header.
+
+All symbols use the =tumblr-= prefix.
+
+* License
+
+GPL-3.0-or-later.

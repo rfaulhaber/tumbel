@@ -1,0 +1,15 @@
+{
+  "meta": {"status": 200, "msg": "OK"},
+  "response": {
+    "user": {
+      "name": "example",
+      "likes": 12,
+      "following": 34,
+      "default_post_format": "html",
+      "blogs": [
+        {"name": "secondary", "title": "Side Blog", "url": "https://secondary.tumblr.com/", "primary": false, "followers": 0, "type": "public", "uuid": "t:SecondaryUuid"},
+        {"name": "example", "title": "Example Blog", "url": "https://example.tumblr.com/", "primary": true, "followers": 99, "type": "public", "uuid": "t:AbCdEfGhIjKlMnOpQrStUv"}
+      ]
+    }
+  }
+}

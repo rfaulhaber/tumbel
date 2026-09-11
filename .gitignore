@@ -1,0 +1,14 @@
+# Byte-compiled and Emacs scratch files
+*.elc
+*-autoloads.el
+*~
+\#*\#
+.\#*
+
+# Nix
+result
+result-*
+.direnv/
+
+# Local-only tool state
+.claude/settings.local.json

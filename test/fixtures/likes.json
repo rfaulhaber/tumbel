@@ -1,0 +1,10 @@
+{
+  "meta": {"status": 200, "msg": "OK"},
+  "response": {
+    "liked_posts": [
+      {"type": "blocks", "blog_name": "root-blog", "blog": {"name": "root-blog", "uuid": "t:RootUuid"}, "id": 900, "id_string": "900", "post_url": "https://root-blog.tumblr.com/post/900", "timestamp": 1757000000, "liked_timestamp": 1757500000, "reblog_key": "rk900", "tags": [], "liked": true, "note_count": 5, "can_like": true, "can_reblog": true, "content": [{"type": "text", "text": "A liked post."}], "layout": [], "trail": []},
+      {"type": "blocks", "blog_name": "middle-blog", "blog": {"name": "middle-blog", "uuid": "t:MiddleUuid"}, "id": 901, "id_string": "901", "post_url": "https://middle-blog.tumblr.com/post/901", "timestamp": 1757000100, "liked_timestamp": 1757400000, "reblog_key": "rk901", "tags": [], "liked": true, "note_count": 2, "can_like": true, "can_reblog": true, "content": [{"type": "text", "text": "Another liked post."}], "layout": [], "trail": []}
+    ],
+    "liked_count": 3
+  }
+}
