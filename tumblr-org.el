@@ -286,7 +286,8 @@ offsets count characters, as NPF does."
              (blocks (tumblr-org--state-passthrough state)))
          (when (and blocks (< index (length blocks)))
            (tumblr-org--push state (seq-elt blocks index))))))
-    ((or 'horizontal-rule 'property-drawer 'drawer 'comment 'comment-block)
+    ((or 'horizontal-rule 'property-drawer 'drawer 'comment 'comment-block
+         'planning)
      nil)
     (_
      (let ((text (string-trim (org-element-interpret-data element))))

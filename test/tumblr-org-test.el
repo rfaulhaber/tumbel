@@ -143,6 +143,14 @@
     (should (equal (tumblr-org-test-blocks "#+tumblr-block: 5" (vector image))
                    nil))))
 
+(ert-deftest tumblr-org-test-planning-and-drawers-dropped ()
+  "Planning lines and property drawers carry no post text."
+  (should (equal (tumblr-org-test-blocks
+                  (concat "* Title\nSCHEDULED: <2026-09-16 Wed>\n"
+                          ":PROPERTIES:\n:TUMBLR_ID: 1\n:END:\nBody"))
+                 (list (tumblr-org-test-text "Title" '(subtype . "heading1"))
+                       (tumblr-org-test-text "Body")))))
+
 (ert-deftest tumblr-org-test-from-npf ()
   "Text blocks become Org markup and other blocks placeholders."
   (should (equal (tumblr-org-from-npf
