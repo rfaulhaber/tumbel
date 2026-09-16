@@ -336,20 +336,23 @@ published once sent."
              (not tumblr-compose--reblog))
     (user-error "The post is empty")))
 
+(defun tumblr-compose-preview-request (blog body)
+  "Show BODY, a (POST . FILES) request for BLOG, in a preview buffer."
+  (with-current-buffer (get-buffer-create "*tumblr: preview*")
+    (let ((inhibit-read-only t))
+      (erase-buffer)
+      (insert (format "Blog: %s\n\n%s\n" blog (tumblr-http-encode (car body))))
+      (dolist (file (cdr body))
+        (insert (format "\nUpload %s as %s" (cdr file) (car file)))))
+    (special-mode)
+    (pop-to-buffer (current-buffer))))
+
 (defun tumblr-compose-preview ()
   "Show the request that `tumblr-compose-send' would make."
   (interactive)
-  (let* ((plist (tumblr-compose-parse (buffer-string)))
-         (body (tumblr-compose--request-body plist)))
-    (with-current-buffer (get-buffer-create "*tumblr: preview*")
-      (let ((inhibit-read-only t))
-        (erase-buffer)
-        (insert (format "Blog: %s\n\n%s\n" (plist-get plist :blog)
-                        (tumblr-http-encode (car body))))
-        (dolist (file (cdr body))
-          (insert (format "\nUpload %s as %s" (cdr file) (car file)))))
-      (special-mode)
-      (pop-to-buffer (current-buffer)))))
+  (let ((plist (tumblr-compose-parse (buffer-string))))
+    (tumblr-compose-preview-request (plist-get plist :blog)
+                                    (tumblr-compose--request-body plist))))
 
 (defun tumblr-compose-send ()
   "Send the post to Tumblr and kill the buffer when it is accepted."

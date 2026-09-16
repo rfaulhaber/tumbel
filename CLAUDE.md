@@ -6,7 +6,8 @@ buffers, blog/tag views, the dashboard, inline images and the like/reblog/
 follow/delete actions, the Org compose buffer with image uploads, notes and the
 activity view, the likes feed, the following/followers tables and the
 queue/drafts/inbox views exist (plan
-Phases 0 to 9), and feeds collapse posts matching the account filters. Left
+Phases 0 to 9), feeds collapse posts matching the account filters, and Org
+files or entries can be posted in place. Left
 for later: a `since_id` fast refresh, an auto-refresh timer, avatars in feed
 headers, an Info manual.
 
@@ -37,6 +38,11 @@ Run inside `nix develop` (direnv picks up `.envrc`).
   header lines then the body in Org; new posts,
   reblogs with a comment, edits of own posts (fetched in fidelity form so
   media survives); `C-c C-c` sends, `C-c C-a` attaches an image.
+- `tumblr-post.el` — `tumblr-post-buffer` and `tumblr-post-subtree`: an
+  Org file or the entry at point sent as a post through the compose
+  request builder; metadata from file keywords or inherited `TUMBLR_*`
+  properties, the id written back (`#+tumblr_id:` or `TUMBLR_ID`) so a
+  rerun is a PUT.
 - `tumblr-notes.el` — notes of a post as a feed of `kind` `note` (`v` in feeds).
 - `tumblr-notifications.el` — activity of an own blog (`tumblr-notifications`).
 - `tumblr.el` — also holds the `tumblr-dispatch` transient bound to `?`.

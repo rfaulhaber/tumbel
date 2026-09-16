@@ -9,8 +9,9 @@ leaving Emacs.
 images, browse blogs and tags, like, reblog, follow and delete, and write,
 reblog with a comment, edit text posts, read the notes of a post and follow
 the activity of your blog. Posts are written in Org, with images uploaded
-from file links, you can manage your queue, drafts and inbox, and posts
-matching the tags and words you filter on Tumblr are collapsed until shown.
+from file links, or sent straight from an Org file or entry; you can manage
+your queue, drafts and inbox, and posts matching the tags and words you
+filter on Tumblr are collapsed until shown.
 
 * Setup
 
@@ -45,6 +46,9 @@ The package depends on =plz=, which drives =curl=, so =curl= must be on your
 - =M-x tumblr-blog= :: browse the posts of a blog (name, hostname or URL); with
   a prefix argument, only its posts carrying a tag.
 - =M-x tumblr-compose= :: write a new post.
+- =M-x tumblr-post-buffer= and =M-x tumblr-post-subtree= :: post an Org file
+  you already have, or the entry at point, without a compose buffer (see
+  below).
 - =M-x tumblr-likes= :: the posts you liked.
 - =M-x tumblr-queue=, =M-x tumblr-drafts= and =M-x tumblr-inbox= :: the posts of
   your blog that are not public yet (a prefix argument chooses the blog). =P=
@@ -84,6 +88,20 @@ discards, =C-c C-t=, =C-c C-b= and =C-c C-s= change the tags, blog and state,
 and =C-c C-p= shows the JSON that would be sent. Editing one of your posts
 (=E= on it) fetches it again; blocks that are not text appear as
 =#+tumblr-block: N= lines and are kept as they were.
+
+Any Org buffer can be posted as it is. =M-x tumblr-post-buffer= sends the
+whole file as one post: =#+blog:=, =#+tags:= (or =#+filetags:=), =#+state:=
+and =#+publish_on:= describe it, a =#+title:= leads it as a heading and the
+headlines of the file become subheadings. =M-x tumblr-post-subtree= sends
+the entry at point with everything below it: its headline leads the post,
+its tags (inherited ones included) become the tags, and the =TUMBLR_BLOG=,
+=TUMBLR_STATE= and =TUMBLR_PUBLISH_ON= properties, inherited from the
+entries above and from =#+property:= lines, then the file keywords, fill in
+the rest. Both ask before sending, show the request instead with a prefix
+argument, and record the id of the new post in the source (=#+tumblr_id:=
+or the =TUMBLR_ID= property, plus the blog when it was not named) so that
+running the command again replaces that post with the current text. The
+buffer is modified but not saved.
 
 * Development
 
@@ -129,6 +147,7 @@ HTTP backend that serves the JSON fixtures in =test/fixtures/=.
 - =tumblr-manage.el= :: queue, drafts and inbox.
 - =tumblr-org.el= :: the Org subset posts are written in, and its inverse.
 - =tumblr-compose.el= :: writing, reblogging and editing posts.
+- =tumblr-post.el= :: posting Org files and entries in place.
 - =tumblr-notes.el= :: the notes of a post.
 - =tumblr-notifications.el= :: the activity of your blogs.
 - =test/= :: ERT tests, one =NAME-test.el= per source file, plus shared

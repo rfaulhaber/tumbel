@@ -48,6 +48,7 @@
 (require 'tumblr-feed)
 (require 'tumblr-blog)
 (require 'tumblr-compose)
+(require 'tumblr-post)
 (require 'tumblr-notes)
 (require 'tumblr-notifications)
 (require 'tumblr-lists)
