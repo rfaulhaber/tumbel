@@ -1,5 +1,5 @@
 {
-  description = "tumblr.el — an interactive Tumblr client for Emacs";
+  description = "tumbel.el — an interactive Tumblr client for Emacs";
 
   inputs = {
     flake-parts.url = "github:hercules-ci/flake-parts";
@@ -21,8 +21,8 @@
           emacs = pkgs.emacs-nox;
           epkgs = pkgs.emacsPackagesFor emacs;
 
-          # Libraries tumblr.el needs at runtime. Keep in sync with the
-          # Package-Requires header in tumblr.el.
+          # Libraries tumbel.el needs at runtime. Keep in sync with the
+          # Package-Requires header in tumbel.el.
           runtimeDeps = e: [ e.plz ];
 
           # Tooling for the devshell and checks; never shipped with the package.
@@ -41,8 +41,8 @@
             ];
           };
 
-          tumblr = epkgs.trivialBuild {
-            pname = "tumblr";
+          tumbel = epkgs.trivialBuild {
+            pname = "tumbel";
             version = "0.1.0";
             inherit src;
             packageRequires = runtimeDeps epkgs;
@@ -57,7 +57,7 @@
           # checks just run it against the store copy of the sources.
           mkMakeCheck =
             target:
-            pkgs.runCommand "tumblr-${target}"
+            pkgs.runCommand "tumbel-${target}"
               {
                 nativeBuildInputs = [
                   emacsDev
@@ -71,10 +71,10 @@
               '';
         in
         {
-          packages.default = tumblr;
+          packages.default = tumbel;
 
           checks = {
-            build = tumblr;
+            build = tumbel;
             test = mkMakeCheck "test";
             lint = mkMakeCheck "lint";
           };

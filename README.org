@@ -1,4 +1,4 @@
-#+TITLE: tumblr.el
+#+TITLE: tumbel.el
 #+AUTHOR: Ryan Faulhaber
 
 An interactive Tumblr client for Emacs, in the spirit of =twittering-mode= and
@@ -15,7 +15,7 @@ filter on Tumblr are collapsed until shown.
 
 * Setup
 
-tumblr.el talks to the Tumblr API with the consumer key and secret of an
+tumbel.el talks to the Tumblr API with the consumer key and secret of an
 application you register at https://www.tumblr.com/oauth/apps. Store them in
 =auth-source=, for example in =~/.authinfo.gpg=:
 
@@ -23,43 +23,43 @@ application you register at https://www.tumblr.com/oauth/apps. Store them in
 machine api.tumblr.com login CONSUMER-KEY password CONSUMER-SECRET
 #+end_example
 
-or set =tumblr-consumer-key= and =tumblr-consumer-secret= directly. Public
+or set =tumbel-consumer-key= and =tumbel-consumer-secret= directly. Public
 blogs can be read with the key alone; the dashboard and every action need a
 login.
 
-Logging in (=M-x tumblr-login=, or just =M-x tumblr=) opens the authorization
+Logging in (=M-x tumbel-login=, or just =M-x tumbel=) opens the authorization
 page in your browser. Register =http://localhost:3000/redirect= as the default
-callback URL of your application, or set =tumblr-oauth-redirect-uri= to the
+callback URL of your application, or set =tumbel-oauth-redirect-uri= to the
 URL you registered: when it points at a port on this machine, Emacs listens
 there and the login completes on its own. Otherwise, or with
-=tumblr-oauth-use-listener= nil, paste the code or the URL the browser was
-sent to. Tokens are kept in =~/.emacs.d/tumblr/tokens.eld= (mode 600; point
-=tumblr-token-file= at a =.gpg= name to encrypt them) and refreshed
-automatically; =M-x tumblr-logout= forgets them.
+=tumbel-oauth-use-listener= nil, paste the code or the URL the browser was
+sent to. Tokens are kept in =~/.emacs.d/tumbel/tokens.eld= (mode 600; point
+=tumbel-token-file= at a =.gpg= name to encrypt them) and refreshed
+automatically; =M-x tumbel-logout= forgets them.
 
 The package depends on =plz=, which drives =curl=, so =curl= must be on your
 =PATH=.
 
 * Usage
 
-- =M-x tumblr= :: your dashboard, logging in first when needed.
-- =M-x tumblr-blog= :: browse the posts of a blog (name, hostname or URL); with
+- =M-x tumbel= :: your dashboard, logging in first when needed.
+- =M-x tumbel-blog= :: browse the posts of a blog (name, hostname or URL); with
   a prefix argument, only its posts carrying a tag.
-- =M-x tumblr-compose= :: write a new post.
-- =M-x tumblr-post-buffer= and =M-x tumblr-post-subtree= :: post an Org file
+- =M-x tumbel-compose= :: write a new post.
+- =M-x tumbel-post-buffer= and =M-x tumbel-post-subtree= :: post an Org file
   you already have, or the entry at point, without a compose buffer (see
   below).
-- =M-x tumblr-likes= :: the posts you liked.
-- =M-x tumblr-queue=, =M-x tumblr-drafts= and =M-x tumblr-inbox= :: the posts of
+- =M-x tumbel-likes= :: the posts you liked.
+- =M-x tumbel-queue=, =M-x tumbel-drafts= and =M-x tumbel-inbox= :: the posts of
   your blog that are not public yet (a prefix argument chooses the blog). =P=
   publishes the post at point now, =A= answers an ask, =M-<up>= and
   =M-<down>= move a queued post and =S= shuffles the queue.
-- =M-x tumblr-following= and =M-x tumblr-followers= :: tables of the blogs you
+- =M-x tumbel-following= and =M-x tumbel-followers= :: tables of the blogs you
   follow and of the followers of your blog; =RET= opens one, =o= opens it in
   the browser, =y= copies its URL, =u= unfollows, =L= loads more.
-- =M-x tumblr-notifications= :: the activity of your default blog (with a
+- =M-x tumbel-notifications= :: the activity of your default blog (with a
   prefix argument, choose the blog).
-- =M-x tumblr-tag= :: browse the posts carrying a tag.
+- =M-x tumbel-tag= :: browse the posts carrying a tag.
 
 In a feed buffer: =n= and =p= move between posts (=n= past the last post
 loads more), =TAB= moves between buttons (blog names, tags, links, "Keep
@@ -68,10 +68,10 @@ reading"), =RET= follows the button at point or opens the post on its own,
 post in the browser and =y= copies its URL (on a tag, a link or the name of
 another blog, both take that instead), =l= likes or unlikes it, =R= reblogs
 it to
-your default blog (=tumblr-default-blog=, or the primary blog), =f= follows or
+your default blog (=tumbel-default-blog=, or the primary blog), =f= follows or
 unfollows its blog, =D= deletes it when it is yours, =i= toggles inline images,
 =r= reblogs it with a comment, =E= edits it when it is yours, =c= starts a
-new post, =v= shows the notes of the post (=M-x tumblr-notes-switch-mode=
+new post, =v= shows the notes of the post (=M-x tumbel-notes-switch-mode=
 selects likes, reblogs or everything), =?= shows a menu of every command,
 =L= loads the next page, =g=
 reloads and
@@ -91,10 +91,10 @@ and =C-c C-p= shows the JSON that would be sent. Editing one of your posts
 (=E= on it) fetches it again; blocks that are not text appear as
 =#+tumblr-block: N= lines and are kept as they were.
 
-Any Org buffer can be posted as it is. =M-x tumblr-post-buffer= sends the
+Any Org buffer can be posted as it is. =M-x tumbel-post-buffer= sends the
 whole file as one post: =#+blog:=, =#+tags:= (or =#+filetags:=), =#+state:=
 and =#+publish_on:= describe it, a =#+title:= leads it as a heading and the
-headlines of the file become subheadings. =M-x tumblr-post-subtree= sends
+headlines of the file become subheadings. =M-x tumbel-post-subtree= sends
 the entry at point with everything below it: its headline leads the post,
 its tags (inherited ones included) become the tags, and the =TUMBLR_BLOG=,
 =TUMBLR_STATE= and =TUMBLR_PUBLISH_ON= properties, inherited from the
@@ -126,38 +126,38 @@ The same recipes back the flake checks, so =nix flake check= runs the build,
 tests and lint against a clean store copy of the sources. Format Nix files with
 =nix fmt=.
 
-Tests never touch the network: =test/tumblr-test-support.el= provides a fake
+Tests never touch the network: =test/tumbel-test-support.el= provides a fake
 HTTP backend that serves the JSON fixtures in =test/fixtures/=.
 
 * Layout
 
-- =tumblr.el= :: the entry point. It declares the customization group and the
+- =tumbel.el= :: the entry point. It declares the customization group and the
   package dependencies and requires the other files.
-- =tumblr-http.el= :: the HTTP transport on top of =plz=, JSON handling and
+- =tumbel-http.el= :: the HTTP transport on top of =plz=, JSON handling and
   the error types.
-- =tumblr-auth.el= :: consumer credentials, the OAuth 2.0 login and tokens.
-- =tumblr-user.el= :: the account of the logged-in user.
-- =tumblr-api.el= :: request building, authentication levels and endpoint
+- =tumbel-auth.el= :: consumer credentials, the OAuth 2.0 login and tokens.
+- =tumbel-user.el= :: the account of the logged-in user.
+- =tumbel-api.el= :: request building, authentication levels and endpoint
   wrappers for the Tumblr API v2.
-- =tumblr-media.el= :: inline images, fetched in the background and cached
-  under =~/.emacs.d/tumblr/media/= (=M-x tumblr-media-clear-cache= empties it).
-  Set =tumblr-display-images= to nil to keep placeholders instead.
-- =tumblr-npf.el= :: rendering of Neue Post Format posts.
-- =tumblr-feed.el= :: the feed buffer mode shared by every view.
-- =tumblr-blog.el= :: blog, tag and likes views.
-- =tumblr-lists.el= :: tables of blogs (following, followers).
-- =tumblr-manage.el= :: queue, drafts and inbox.
-- =tumblr-org.el= :: the Org subset posts are written in, and its inverse.
-- =tumblr-compose.el= :: writing, reblogging and editing posts.
-- =tumblr-post.el= :: posting Org files and entries in place.
-- =tumblr-notes.el= :: the notes of a post.
-- =tumblr-notifications.el= :: the activity of your blogs.
+- =tumbel-media.el= :: inline images, fetched in the background and cached
+  under =~/.emacs.d/tumbel/media/= (=M-x tumbel-media-clear-cache= empties it).
+  Set =tumbel-display-images= to nil to keep placeholders instead.
+- =tumbel-npf.el= :: rendering of Neue Post Format posts.
+- =tumbel-feed.el= :: the feed buffer mode shared by every view.
+- =tumbel-blog.el= :: blog, tag and likes views.
+- =tumbel-lists.el= :: tables of blogs (following, followers).
+- =tumbel-manage.el= :: queue, drafts and inbox.
+- =tumbel-org.el= :: the Org subset posts are written in, and its inverse.
+- =tumbel-compose.el= :: writing, reblogging and editing posts.
+- =tumbel-post.el= :: posting Org files and entries in place.
+- =tumbel-notes.el= :: the notes of a post.
+- =tumbel-notifications.el= :: the activity of your blogs.
 - =test/= :: ERT tests, one =NAME-test.el= per source file, plus shared
   helpers and fixtures.
 - =flake.nix= :: devshell, package build and checks. Runtime dependencies are
   declared once in =runtimeDeps= and must match the =Package-Requires= header.
 
-All symbols use the =tumblr-= prefix.
+All symbols use the =tumbel-= prefix.
 
 * License
 
