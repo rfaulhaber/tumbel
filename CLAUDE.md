@@ -66,7 +66,8 @@ Run inside `nix develop` (direnv picks up `.envrc`).
   (all blocks kept as placeholders, ask layout sent), `M-<up>`/`M-<down>`
   reorder and `S` shuffles the queue.
 - `tumblr-lists.el` — `tumblr-lists-mode` (tabulated) for `tumblr-following` and
-  `tumblr-followers`; `RET` opens, `u` unfollows, `L` pages.
+  `tumblr-followers`; `RET` opens, `o`/`y` browse or copy the blog URL,
+  `u` unfollows, `L` pages.
 - `tumblr-blog.el` — blog (optionally narrowed to a tag), tag and likes
   sources, the blog header, `tumblr-blog`, `tumblr-tag`, `tumblr-likes`; and
   nothing else.

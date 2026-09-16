@@ -58,7 +58,9 @@ receiving the entries and the total count.")
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "RET") #'tumblr-lists-open)
     (define-key map (kbd "L") #'tumblr-lists-load-more)
+    (define-key map (kbd "o") #'tumblr-lists-browse-url)
     (define-key map (kbd "u") #'tumblr-lists-unfollow)
+    (define-key map (kbd "y") #'tumblr-lists-copy-url)
     map)
   "Keymap of `tumblr-lists-mode'.")
 
@@ -140,13 +142,28 @@ receiving the entries and the total count.")
         ((not (tumblr-lists-more-p)) (message "Every blog is listed"))
         (t (tumblr-lists--load-page))))
 
+(defun tumblr-lists--name-at-point ()
+  "Return the name of the blog at point, or signal a user error."
+  (or (tabulated-list-get-id)
+      (user-error "No blog here")))
+
 (defun tumblr-lists-open ()
   "Open the blog at point."
   (interactive)
-  (let ((name (tabulated-list-get-id)))
-    (unless name
-      (user-error "No blog here"))
-    (funcall tumblr-npf-open-blog-function name)))
+  (funcall tumblr-npf-open-blog-function (tumblr-lists--name-at-point)))
+
+(defun tumblr-lists-browse-url ()
+  "Open the blog at point in the browser."
+  (interactive)
+  (funcall tumblr-npf-open-url-function
+           (tumblr-npf-blog-url (tumblr-lists--name-at-point))))
+
+(defun tumblr-lists-copy-url ()
+  "Copy the URL of the blog at point to the kill ring."
+  (interactive)
+  (let ((url (tumblr-npf-blog-url (tumblr-lists--name-at-point))))
+    (kill-new url)
+    (message "Copied %s" url)))
 
 (defun tumblr-lists-unfollow ()
   "Unfollow the blog at point."

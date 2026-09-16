@@ -459,21 +459,40 @@ Feeds of other items open whatever the item refers to."
   (funcall tumblr-npf-open-tag-function tag))
 
 (defun tumblr-feed-browse-url ()
-  "Open the post at point in the browser."
+  "Open what is at point in the browser.
+On a tag, a link or the name of another blog, that is the tag page,
+the link or the blog; elsewhere, including the post's own name, it is
+the post at point."
   (interactive)
   (funcall tumblr-npf-open-url-function (tumblr-feed--url-at-point)))
 
 (defun tumblr-feed-copy-url ()
-  "Copy the URL of the post at point to the kill ring."
+  "Copy the URL of what is at point to the kill ring.
+See `tumblr-feed-browse-url' for what that is."
   (interactive)
   (let ((url (tumblr-feed--url-at-point)))
     (kill-new url)
     (message "Copied %s" url)))
 
+(defun tumblr-feed--button-url (button)
+  "Return the web URL of the tag, link or other blog BUTTON names, or nil.
+The name of the post's own blog, where navigation leaves point, names
+nothing: `o' after `n' must open the post."
+  (let ((blog (button-get button 'tumblr-blog-name))
+        (tag (button-get button 'tumblr-tag)))
+    (cond (blog (and (not (equal blog (tumblr-npf-post-blog-name
+                                       (tumblr-feed--post-at-point))))
+                     (tumblr-npf-blog-url blog)))
+          (tag (tumblr-npf-tag-url tag))
+          (t (button-get button 'tumblr-url)))))
+
 (defun tumblr-feed--url-at-point ()
-  "Return the URL of the post at point, or signal a user error."
-  (or (tumblr-npf-post-url (tumblr-feed-post-at-point))
-      (user-error "This post has no URL")))
+  "Return the URL of the button at point, else of the post at point.
+Signal a user error when there is neither."
+  (let ((button (button-at (point))))
+    (or (and button (tumblr-feed--button-url button))
+        (tumblr-npf-post-url (tumblr-feed-post-at-point))
+        (user-error "This post has no URL"))))
 
 (defun tumblr-feed-toggle-images ()
   "Show or hide the images of this feed."

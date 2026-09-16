@@ -37,6 +37,7 @@
 (require 'seq)
 (require 'subr-x)
 (require 'tumblr-media)
+(require 'url-util)
 
 ;;;; Faces
 
@@ -202,6 +203,15 @@ and returned."
 (defun tumblr-npf-post-url (post)
   "Return the web URL of POST, or nil."
   (alist-get 'post_url post))
+
+(defun tumblr-npf-blog-url (name)
+  "Return the web URL of the blog NAME.
+The tumblr.com form reaches blogs on custom domains too."
+  (format "https://www.tumblr.com/%s" name))
+
+(defun tumblr-npf-tag-url (tag)
+  "Return the web URL of the posts tagged TAG."
+  (format "https://www.tumblr.com/tagged/%s" (url-hexify-string tag)))
 
 (defun tumblr-npf-post-tags (post)
   "Return the list of tags of POST."

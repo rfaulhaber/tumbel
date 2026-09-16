@@ -55,8 +55,8 @@ The package depends on =plz=, which drives =curl=, so =curl= must be on your
   publishes the post at point now, =A= answers an ask, =M-<up>= and
   =M-<down>= move a queued post and =S= shuffles the queue.
 - =M-x tumblr-following= and =M-x tumblr-followers= :: tables of the blogs you
-  follow and of the followers of your blog; =RET= opens one, =u= unfollows,
-  =L= loads more.
+  follow and of the followers of your blog; =RET= opens one, =o= opens it in
+  the browser, =y= copies its URL, =u= unfollows, =L= loads more.
 - =M-x tumblr-notifications= :: the activity of your default blog (with a
   prefix argument, choose the blog).
 - =M-x tumblr-tag= :: browse the posts carrying a tag.
@@ -64,8 +64,10 @@ The package depends on =plz=, which drives =curl=, so =curl= must be on your
 In a feed buffer: =n= and =p= move between posts (=n= past the last post
 loads more), =TAB= moves between buttons (blog names, tags, links, "Keep
 reading"), =RET= follows the button at point or opens the post on its own,
-=b= opens the blog of the post, =t= browses one of its tags, =o= opens it in
-the browser, =y= copies its URL, =l= likes or unlikes it, =R= reblogs it to
+=b= opens the blog of the post, =t= browses one of its tags, =o= opens the
+post in the browser and =y= copies its URL (on a tag, a link or the name of
+another blog, both take that instead), =l= likes or unlikes it, =R= reblogs
+it to
 your default blog (=tumblr-default-blog=, or the primary blog), =f= follows or
 unfollows its blog, =D= deletes it when it is yours, =i= toggles inline images,
 =r= reblogs it with a comment, =E= edits it when it is yours, =c= starts a
