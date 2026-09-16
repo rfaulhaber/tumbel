@@ -44,6 +44,10 @@
 (require 'subr-x)
 (require 'tumblr-api)
 
+;; Following a mention opens the blog, a command of a file above this one
+;; in the dependency order.
+(declare-function tumblr-blog "tumblr-blog" (blog &optional tag))
+
 (defvar tumblr-org-blog-uuid-function #'tumblr-api-blog-uuid
   "Function returning the UUID of the blog named by its argument.
 Mentions need it; the default asks the API once per blog.")
@@ -52,8 +56,7 @@ Mentions need it; the default asks the API once per blog.")
   "Extensions of files that a file: link can upload as an image.")
 
 (org-link-set-parameters "tumblr"
-                         :follow (lambda (name _arg)
-                                   (funcall 'tumblr-blog name))
+                         :follow (lambda (name _arg) (tumblr-blog name))
                          :face 'tumblr-mention)
 
 ;;;; Org to NPF
