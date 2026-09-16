@@ -5,9 +5,10 @@ emacs := env('EMACS', 'emacs')
 batch := emacs + ' -Q --batch -L . -L test'
 
 # elisp-lint writes a scratch <dir>-autoloads.el next to the sources; never
-# treat it as one.
-srcs := `ls *.el | grep -v -- '-autoloads\.el$' | tr '\n' ' '`
-tests := `ls test/*-test.el | tr '\n' ' '`
+# treat it as one.  The C locale keeps the order the same everywhere, so
+# a compile that passes here passes in the Nix sandbox.
+srcs := `LC_ALL=C ls tumblr*.el | grep -v -- '-autoloads\.el$' | tr '\n' ' '`
+tests := `LC_ALL=C ls test/*-test.el | tr '\n' ' '`
 
 default: compile
 
