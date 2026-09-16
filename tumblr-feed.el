@@ -170,17 +170,31 @@ The buffer is reset and the first page loaded.  Return the buffer."
     (tumblr-http-cancel tumblr-feed--loading))
   (setq tumblr-feed--loading nil))
 
+(defface tumblr-separator '((t :strike-through t :inherit shadow))
+  "Face of the rule drawn under each post."
+  :group 'tumblr)
+
+(defun tumblr-feed--separator ()
+  "Return a rule spanning the text area of the window, on its own line."
+  (concat (propertize " " 'display '(space :width text)
+                      'face 'tumblr-separator)
+          "\n"))
+
 (defun tumblr-feed--pretty-print (item)
-  "Insert ITEM, a `tumblr-feed-item', and a blank line."
+  "Insert ITEM, a `tumblr-feed-item', and a blank line.
+Posts end with a rule; items a source renders itself do not."
   (let ((render (tumblr-feed-source-render tumblr-feed--source))
         (post (tumblr-feed-item-post item)))
     (cond (render (funcall render post))
-          ((and (not (tumblr-feed-item-expanded item))
-                (tumblr-feed-hidden-reason post))
-           (tumblr-feed--insert-hidden post (tumblr-feed-hidden-reason post)))
-          (t (tumblr-npf-insert-post post
+          (t
+           (if (and (not (tumblr-feed-item-expanded item))
+                    (tumblr-feed-hidden-reason post))
+               (tumblr-feed--insert-hidden post
+                                           (tumblr-feed-hidden-reason post))
+             (tumblr-npf-insert-post post
                                      :expanded (tumblr-feed-item-expanded
-                                                item)))))
+                                                item)))
+           (insert (tumblr-feed--separator)))))
   (insert "\n"))
 
 (defun tumblr-feed--key (data)

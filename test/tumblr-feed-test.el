@@ -77,6 +77,29 @@ callbacks are stored in `tumblr-feed-test-pending'."
     (should buffer-read-only)
     (should (equal tumblr-feed-test-fetches 1))))
 
+(defun tumblr-feed-test-rules ()
+  "Return how many separator rules the current feed shows."
+  (save-excursion
+    (goto-char (point-min))
+    (let ((count 0))
+      (while (text-property-search-forward 'face 'tumblr-separator t)
+        (cl-incf count))
+      count)))
+
+(ert-deftest tumblr-feed-test-posts-end-with-a-rule ()
+  "A full-width rule follows each post, but not items a source renders."
+  (tumblr-feed-test-with-feed (tumblr-feed-test-source (tumblr-feed-test-pages))
+    (should (equal (tumblr-feed-test-rules) 3))
+    (goto-char (ewoc-location (ewoc-nth tumblr-feed--ewoc 1)))
+    (forward-line -2)
+    (should (equal (get-text-property (point) 'display) '(space :width text)))
+    (should (looking-at-p " \n\n")))
+  (let ((source (tumblr-feed-test-source (tumblr-feed-test-pages))))
+    (setf (tumblr-feed-source-render source)
+          (lambda (post) (insert (tumblr-npf-post-id post) "\n")))
+    (tumblr-feed-test-with-feed source
+      (should (equal (tumblr-feed-test-rules) 0)))))
+
 (ert-deftest tumblr-feed-test-navigation-and-paging ()
   "Moving past the last post loads the next page without duplicates."
   (tumblr-feed-test-with-feed (tumblr-feed-test-source (tumblr-feed-test-pages))
