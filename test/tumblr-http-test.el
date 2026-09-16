@@ -162,6 +162,22 @@
                    "raw bytes"))
     (should (eq (tumblr-test-call-key (tumblr-test-call 0) :binary) t))))
 
+(ert-deftest tumblr-http-test-binary-body-is-unibyte ()
+  "A binary body is delivered as bytes, not as raw-byte characters.
+plz hands back the undecoded body of a multibyte process buffer, whose
+eight-bit characters image loaders cannot read."
+  (let ((jpeg-header (string-to-multibyte "\377\330\377\340")))
+    (should (multibyte-string-p jpeg-header))
+    (tumblr-test-with-backend `(("." 200 ,jpeg-header))
+      (let ((body (tumblr-http-request 'get "https://x/y"
+                                       :as 'binary :then 'sync)))
+        (should-not (multibyte-string-p body))
+        (should (equal body "\377\330\377\340")))
+      (let (delivered)
+        (tumblr-http-request 'get "https://x/y" :as 'binary
+                             :then (lambda (body) (setq delivered body)))
+        (should-not (multibyte-string-p delivered))))))
+
 (ert-deftest tumblr-http-test-as-function ()
   "`:as' may be a function applied to the body."
   (tumblr-test-with-backend '(("." 200 "abc"))

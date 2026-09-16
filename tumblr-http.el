@@ -223,12 +223,21 @@ seconds."
   (and (processp process)
        (process-get process 'tumblr-http-cancelled)))
 
+(defun tumblr-http--bytes (body)
+  "Return BODY as a unibyte string.
+plz leaves an undecoded body as the raw-byte characters of its
+multibyte process buffer, which image loaders cannot read."
+  (if (multibyte-string-p body)
+      (string-to-unibyte body)
+    body))
+
 (defun tumblr-http--parser (as)
   "Return the function turning a response body into the value AS names."
   (pcase as
     ('json (lambda (body) (tumblr-http--parse-body body nil)))
     ('json-fidelity (lambda (body) (tumblr-http--parse-body body t)))
-    ((or 'string 'binary) #'identity)
+    ('string #'identity)
+    ('binary #'tumblr-http--bytes)
     ((pred functionp) as)
     (_ (error "Unknown :as value %S" as))))
 
