@@ -26,7 +26,14 @@
           runtimeDeps = e: [ e.plz ];
 
           # Tooling for the devshell and checks; never shipped with the package.
-          devDeps = e: [ e.elisp-lint ];
+          # evil and evil-snipe are here rather than in runtimeDeps because
+          # tumbel-evil.el only acts once the user has loaded them; the tests
+          # need the real things to check key precedence.
+          devDeps = e: [
+            e.elisp-lint
+            e.evil
+            e.evil-snipe
+          ];
 
           emacsDev = epkgs.emacsWithPackages (e: runtimeDeps e ++ devDeps e);
 

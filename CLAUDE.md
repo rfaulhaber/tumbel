@@ -68,6 +68,12 @@ Run inside `nix develop` (direnv picks up `.envrc`).
 - `tumbel-lists.el` — `tumbel-lists-mode` (tabulated) for `tumbel-following` and
   `tumbel-followers`; `RET` opens, `o`/`y` browse or copy the blog URL,
   `u` unfollows, `L` pages.
+- `tumbel-evil.el` — `tumbel-evil-setup`, opt-in: binds the feed and lists
+  commands in evil's normal and motion auxiliary keymaps (tables of
+  `(KEY . COMMAND)`), vim's essential motions kept, and turns evil-snipe off
+  in feeds. Never requires evil; everything waits in `with-eval-after-load`.
+  A command added to a mode map needs an entry here too, or evil users
+  cannot reach it.
 - `tumbel-blog.el` — blog (optionally narrowed to a tag), tag and likes
   sources, the blog header, `tumbel-blog`, `tumbel-tag`, `tumbel-likes`; and
   nothing else.

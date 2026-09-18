@@ -53,6 +53,7 @@
 (require 'tumbel-notifications)
 (require 'tumbel-lists)
 (require 'tumbel-manage)
+(require 'tumbel-evil)
 
 (defgroup tumbel nil
   "Interactive Tumblr client."

@@ -105,6 +105,35 @@ or the =TUMBLR_ID= property, plus the blog when it was not named) so that
 running the command again replaces that post with the current text. The
 buffer is modified but not saved.
 
+** Evil
+
+Under evil the single-letter keys above are shadowed by vim's. Opt in to a
+second set of bindings, used in the normal and motion states, with
+
+#+begin_src emacs-lisp
+(with-eval-after-load 'tumbel
+  (tumbel-evil-setup))
+#+end_src
+
+The motions worth having in a read-only buffer keep their vim meaning
+(=h j k l=, =w b e=, =/ n N=, =v=, =y=, =gg=, =G=), so the commands that
+sat on those keys move:
+
+| Command                | Default   | Evil                              |
+|------------------------+-----------+-----------------------------------|
+| Next, previous post    | =n=, =p=  | =gj=, =gk= (=]]=, =[[=; =C-j=, =C-k=) |
+| Like                   | =l=       | =s=                               |
+| Open the blog          | =b=       | =B=                               |
+| Copy the URL           | =y=       | =Y= (also in the blog tables)     |
+| Show the notes         | =v=       | =gn=                              |
+| Menu of every command  | =?=       | =g?= (also in the blog tables)    |
+| Reload                 | =g=       | =gr=                              |
+
+Every other key is the one documented above, which costs the motions =f=,
+=t=, =E= and =L=. evil-snipe claims =s=, =f= and =t= too, so it is switched
+off in feed buffers. The Emacs state and the default keymaps are untouched,
+and nothing is loaded or bound for those who do not use evil.
+
 * Development
 
 The repository is a Nix flake. Enter the devshell with =nix develop= (or let
@@ -152,6 +181,7 @@ HTTP backend that serves the JSON fixtures in =test/fixtures/=.
 - =tumbel-post.el= :: posting Org files and entries in place.
 - =tumbel-notes.el= :: the notes of a post.
 - =tumbel-notifications.el= :: the activity of your blogs.
+- =tumbel-evil.el= :: opt-in bindings for evil users.
 - =test/= :: ERT tests, one =NAME-test.el= per source file, plus shared
   helpers and fixtures.
 - =flake.nix= :: devshell, package build and checks. Runtime dependencies are
