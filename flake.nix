@@ -4,6 +4,16 @@
   inputs = {
     flake-parts.url = "github:hercules-ci/flake-parts";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+
+    # Release builds of older Emacsen; nixpkgs only carries the current one.
+    # Its nixpkgs is deliberately not made to follow ours: the binary cache
+    # below only holds builds against its own pin.
+    nix-emacs-ci.url = "github:purcell/nix-emacs-ci";
+  };
+
+  nixConfig = {
+    extra-substituters = "https://emacs-ci.cachix.org";
+    extra-trusted-public-keys = "emacs-ci.cachix.org-1:B5FVOrxhXXrOL0S+tQ7USrhjMT5iOPH+QN9q0NItom4=";
   };
 
   outputs =
@@ -16,10 +26,26 @@
       ];
 
       perSystem =
-        { pkgs, lib, ... }:
+        {
+          pkgs,
+          lib,
+          system,
+          inputs',
+          ...
+        }:
         let
           emacs = pkgs.emacs-nox;
           epkgs = pkgs.emacsPackagesFor emacs;
+
+          # Older releases the tests also run under, as nix-emacs-ci attribute
+          # names: the last point release of each major version from the
+          # Package-Requires floor in tumbel.el up, those being what people
+          # on an older major actually run. Point releases add no API, and
+          # package-lint holds the code to the floor itself.
+          olderEmacsen = [
+            "emacs-29-4"
+            "emacs-30-2"
+          ];
 
           # Libraries tumbel.el needs at runtime. Keep in sync with the
           # Package-Requires header in tumbel.el.
@@ -29,13 +55,19 @@
           # evil and evil-snipe are here rather than in runtimeDeps because
           # tumbel-evil.el only acts once the user has loaded them; the tests
           # need the real things to check key precedence.
-          devDeps = e: [
-            e.elisp-lint
+          testDeps = e: [
             e.evil
             e.evil-snipe
           ];
 
-          emacsDev = epkgs.emacsWithPackages (e: runtimeDeps e ++ devDeps e);
+          # Kept apart from testDeps so the older Emacsen, which only run the
+          # tests, don't depend on the linters still supporting them.
+          lintDeps = e: [ e.elisp-lint ];
+
+          withPackages =
+            emacs: deps: (pkgs.emacsPackagesFor emacs).emacsWithPackages (e: runtimeDeps e ++ deps e);
+
+          emacsDev = withPackages emacs (e: testDeps e ++ lintDeps e);
 
           # Only the files the build and tests actually read, so edits to
           # docs or Nix files don't invalidate the derivations.
@@ -63,11 +95,11 @@
           # The justfile is the single definition of how to test and lint;
           # checks just run it against the store copy of the sources.
           mkMakeCheck =
-            target:
-            pkgs.runCommand "tumbel-${target}"
+            name: emacsEnv: target:
+            pkgs.runCommand "tumbel-${name}"
               {
                 nativeBuildInputs = [
-                  emacsDev
+                  emacsEnv
                   pkgs.just
                 ];
               }
@@ -76,15 +108,30 @@
                 just ${target}
                 touch $out
               '';
+
+          # `just test` byte-compiles with warnings as errors first, so each
+          # of these covers both the compiler and the suites of that release.
+          # nix-emacs-ci has no binary cache for aarch64-linux, where every
+          # run would compile each Emacs from source; nothing here depends on
+          # the architecture, so the other systems cover it.
+          olderEmacsChecks = lib.optionalAttrs (system != "aarch64-linux") (
+            lib.genAttrs' olderEmacsen (
+              name:
+              lib.nameValuePair "test-${name}" (
+                mkMakeCheck "test-${name}" (withPackages inputs'.nix-emacs-ci.packages.${name} testDeps) "test"
+              )
+            )
+          );
         in
         {
           packages.default = tumbel;
 
           checks = {
             build = tumbel;
-            test = mkMakeCheck "test";
-            lint = mkMakeCheck "lint";
-          };
+            test = mkMakeCheck "test" emacsDev "test";
+            lint = mkMakeCheck "lint" emacsDev "lint";
+          }
+          // olderEmacsChecks;
 
           formatter = pkgs.nixfmt-tree;
 

@@ -18,7 +18,11 @@ Run inside `nix develop` (direnv picks up `.envrc`).
 - `just compile` — byte-compile with warnings as errors
 - `just test` — ERT suites in `test/`
 - `just lint` — elisp-lint (checkdoc, package-lint, indentation, whitespace)
-- `nix flake check` — build + test + lint against a clean store copy
+- `nix flake check` — build + test + lint against a clean store copy, plus
+  the tests under each older Emacs in `olderEmacsen` (`flake.nix`). Add
+  `--accept-flake-config` to fetch those Emacsen from the nix-emacs-ci cache
+  rather than compile them. One alone:
+  `nix build .#checks.x86_64-linux.test-emacs-29-4 -L`
 - `nix fmt` — format Nix files
 
 ## Layout
@@ -99,6 +103,8 @@ the other views. Sub-files never
   is the `:fidelity` parse used by edit passthrough.
 - New runtime dependencies go in two places: `runtimeDeps` in `flake.nix` and
   the `Package-Requires` header in `tumbel.el`. plz needs `curl` on `PATH`.
+  `olderEmacsen` in `flake.nix` holds the last point release of each major
+  version from that header's Emacs floor up; raising the floor drops entries.
 - Fixtures live under `test/fixtures/` and must be staged in git, otherwise
   `nix flake check` does not see them.
 - Text is never edited after insertion: build a block as a string, apply
