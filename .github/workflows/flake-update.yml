@@ -1,0 +1,64 @@
+# Weekly flake.lock bump. The lock pins the whole toolchain the checks run
+# against (Emacs, plz, elisp-lint and package-lint), so without this CI keeps
+# passing against a snapshot that drifts ever further from what users install.
+#
+# A pull request opened with GITHUB_TOKEN does not trigger other workflows, so
+# ci.yml never runs on the bump. The check below is the gate instead: a lock
+# that breaks the build fails this run and no pull request appears. Opening
+# the pull request needs "Allow GitHub Actions to create and approve pull
+# requests" enabled in the repository's Actions settings.
+
+name: Flake Update
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+concurrency:
+  group: flake-update
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: DeterminateSystems/nix-installer-action@v23
+
+      # nix reports the input changes on stderr; they become the pull request
+      # body. The file lives outside the workspace so it is never committed.
+      # `shell: bash` gives the pipeline pipefail, so a failed update is not
+      # masked by tee.
+      - name: Update flake.lock
+        shell: bash
+        run: |
+          {
+            echo 'Weekly flake.lock update. The flake checks passed on'
+            echo 'x86_64-linux against this lock before this was opened.'
+            echo
+            echo '```'
+            nix flake update 2>&1
+            echo '```'
+          } | tee "$RUNNER_TEMP/pr-body.md"
+
+      - name: Build, test and lint against the new lock
+        run: nix flake check --accept-flake-config --keep-going --print-build-logs
+
+      # Does nothing when the lock is unchanged, and force-updates the branch
+      # of a pull request that is still open from an earlier week.
+      - name: Open or refresh the pull request
+        uses: peter-evans/create-pull-request@v8
+        with:
+          branch: flake-update
+          delete-branch: true
+          add-paths: flake.lock
+          commit-message: "chore: update flake.lock"
+          title: "chore: update flake.lock"
+          body-path: ${{ runner.temp }}/pr-body.md

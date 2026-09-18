@@ -1,0 +1,70 @@
+# The flake is the single definition of build, test and lint: its checks run
+# the justfile against a store copy of the sources. CI is therefore nothing
+# but `nix flake check`, and a red run reproduces locally with that command.
+
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  # `nix flake check` only builds the checks of the system it runs on, so
+  # each system the flake declares gets a native runner. Everything heavy
+  # substitutes from cache.nixos.org, or for the older Emacsen from the cache
+  # the flake's nixConfig names; only the elisp builds here, which is why
+  # there is no cache step.
+  check:
+    name: check (${{ matrix.system }})
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    strategy:
+      # A failure on one system says nothing about the others.
+      fail-fast: false
+      matrix:
+        include:
+          - system: x86_64-linux
+            runner: ubuntu-latest
+          - system: aarch64-linux
+            runner: ubuntu-24.04-arm
+          - system: aarch64-darwin
+            runner: macos-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: DeterminateSystems/nix-installer-action@v23
+
+      # --accept-flake-config lets the flake add its binary cache; without it
+      # every older Emacs compiles from source. --keep-going so a failure
+      # under one Emacs release doesn't hide the verdict on the others.
+      - name: Build, test and lint
+        run: nix flake check --accept-flake-config --keep-going --print-build-logs
+
+  # The flake checks only see the elisp sources, so the Nix code gets its own
+  # gate, with the same tools the devshell carries.
+  nix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: DeterminateSystems/nix-installer-action@v23
+
+      - name: Format
+        run: nix fmt -- --ci
+
+      - name: statix
+        run: nix develop --command statix check .
+
+      - name: deadnix
+        run: nix develop --command deadnix --fail .

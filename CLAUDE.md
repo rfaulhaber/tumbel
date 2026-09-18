@@ -85,6 +85,12 @@ Run inside `nix develop` (direnv picks up `.envrc`).
   `test/tumbel-test-support.el` holds the fake backend and fixture loader;
   `test/fixtures/*.json` are scrubbed API responses.
 
+- `.github/workflows/ci.yml` — `nix flake check` on a native runner per flake
+  system, plus `nix fmt`, statix and deadnix over the Nix code.
+  `flake-update.yml` — weekly `flake.lock` bump, opened as a pull request
+  only once the checks pass against it. Anything CI should enforce goes in
+  the flake checks or the justfile, not in workflow steps.
+
 Dependency order is http → auth → api → user → media → npf → feed → blog and
 the other views. Sub-files never
 `require` `tumbel.el`.
